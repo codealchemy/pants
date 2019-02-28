@@ -144,3 +144,15 @@ python_tests(
     'tests/python/pants_test:task_test_base',
   ]
 )
+
+python_tests(
+  name = 'target_tag_definitions',
+  sources = ['test_target_tag_definitions.py'],
+  dependencies = [
+    '3rdparty/python:future',
+    'src/python/pants/build_graph',
+    'src/python/pants/task',
+    'src/python/pants/util:contextutil',
+    'tests/python/pants_test:task_test_base',
+  ]
+)

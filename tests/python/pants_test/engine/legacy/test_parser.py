@@ -11,11 +11,22 @@ from pants.engine.legacy.parser import LegacyPythonCallbacksParser
 from pants.engine.parser import EmptyTable
 
 
+class TestTargetTagDefinitions(object):
+
+    def tags_for(self, target_name):
+      return ['tag1']
+
+
 class LegacyPythonCallbacksParserTest(unittest.TestCase):
 
   def test_no_import_sideeffects(self):
     # A parser with no symbols registered.
-    parser = LegacyPythonCallbacksParser(EmptyTable(), BuildFileAliases(), build_file_imports_behavior='allow')
+    parser = LegacyPythonCallbacksParser(
+      EmptyTable(), 
+      BuildFileAliases(), 
+      'allow',
+      TestTargetTagDefinitions()
+    )
     # Call to import a module should succeed.
     parser.parse('/dev/null', b'''import os; os.path.join('x', 'y')''')
     # But the imported module should not be visible as a symbol in further parses.

@@ -18,6 +18,7 @@ from pants.backend.python.targets.python_tests import PythonTests
 from pants.base.build_environment import get_buildroot
 from pants.base.file_system_project_tree import FileSystemProjectTree
 from pants.build_graph.remote_sources import RemoteSources
+from pants.build_graph.target_tag_definitions import TargetTagDefinitions
 from pants.engine.build_files import create_graph_rules
 from pants.engine.console import Console
 from pants.engine.fs import create_fs_rules
@@ -336,7 +337,8 @@ class EngineInitializer(object):
     parser = LegacyPythonCallbacksParser(
       symbol_table,
       build_file_aliases,
-      build_file_imports_behavior
+      build_file_imports_behavior,
+      TargetTagDefinitions.global_instance()
     )
     address_mapper = AddressMapper(parser=parser,
                                    build_ignore_patterns=build_ignore_patterns,

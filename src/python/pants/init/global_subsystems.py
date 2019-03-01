@@ -7,6 +7,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from builtins import object
 
 from pants.binaries.binary_util import BinaryUtil
+from pants.build_graph.target_tag_definitions import TargetTagDefinitions
 from pants.goal.run_tracker import RunTracker
 from pants.init.repro import Reproducer
 from pants.process.subprocess import Subprocess
@@ -26,5 +27,6 @@ class GlobalSubsystems(object):
       RunTracker,
       Changed,
       BinaryUtil.Factory,
-      Subprocess.Factory
+      Subprocess.Factory,
+      TargetTagDefinitions,
     }

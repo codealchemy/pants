@@ -63,11 +63,11 @@ class LegacyBuildGraph(BuildGraph):
   """
 
   @classmethod
-  def create(cls, scheduler, symbol_table):
+  def create(cls, scheduler, symbol_table, target_tag_definitions):
     """Construct a graph given a Scheduler, Engine, and a SymbolTable class."""
-    return cls(scheduler, target_types_from_symbol_table(symbol_table))
+    return cls(scheduler, target_types_from_symbol_table(symbol_table), target_tag_definitions)
 
-  def __init__(self, scheduler, target_types):
+  def __init__(self, scheduler, target_types, target_tag_definitions):
     """Construct a graph given a Scheduler, Engine, and a SymbolTable class.
 
     :param scheduler: A Scheduler that is configured to be able to resolve TransitiveHydratedTargets.
@@ -76,6 +76,7 @@ class LegacyBuildGraph(BuildGraph):
     """
     self._scheduler = scheduler
     self._target_types = target_types
+    self._target_tag_definitions = target_tag_definitions
     super(LegacyBuildGraph, self).__init__()
 
   def clone_new(self):
@@ -157,6 +158,10 @@ class LegacyBuildGraph(BuildGraph):
       # Pop dependencies, which were already consumed during construction.
       kwargs = target_adaptor.kwargs()
       kwargs.pop('dependencies')
+
+      # Append any globally defined tags to the target
+      kwargs.setdefault('tags', set())
+      kwargs['tags'].update(self._target_tag_definitions().tags_for(target_adaptor.address.spec))
 
       # Instantiate.
       if issubclass(target_cls, AppBase):

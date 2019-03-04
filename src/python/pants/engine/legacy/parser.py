@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import logging
 import os
 import tokenize
-from builtins import object, set
 from io import BytesIO, StringIO
 
 import six
@@ -35,7 +34,7 @@ class LegacyPythonCallbacksParser(Parser):
   macros and target factories.
   """
 
-  def __init__(self, symbol_table, aliases, build_file_imports_behavior, target_tag_definitions):
+  def __init__(self, symbol_table, aliases, build_file_imports_behavior):
     """
     :param symbol_table: A SymbolTable for this parser, which will be overlaid with the given
       additional aliases.
@@ -45,16 +44,13 @@ class LegacyPythonCallbacksParser(Parser):
     :param build_file_imports_behavior: How to behave if a BUILD file being parsed tries to use
       import statements. Valid values: "allow", "warn", "error".
     :type build_file_imports_behavior: string
-    :param target_tag_definitions: instance of a class with a `tags_for()` function
-      that retrieves the tags to apply to a target from a source JSON file.
-    :type target_tag_definitions: :class:`pants.build_graph.target_tag_definitions.TargetTagDefinitions`
     """
     super(LegacyPythonCallbacksParser, self).__init__()
-    self._symbols, self._parse_context = self._generate_symbols(symbol_table, aliases, target_tag_definitions)
+    self._symbols, self._parse_context = self._generate_symbols(symbol_table, aliases)
     self._build_file_imports_behavior = build_file_imports_behavior
 
   @staticmethod
-  def _generate_symbols(symbol_table, aliases, target_tag_definitions):
+  def _generate_symbols(symbol_table, aliases):
     symbols = {}
 
     # Compute "per path" symbols.  For performance, we use the same ParseContext, which we
@@ -86,9 +82,6 @@ class LegacyPythonCallbacksParser(Parser):
             raise UnaddressableObjectError(
                 'Targets in root-level BUILD files must be named explicitly.')
         name = kwargs.get('name')
-        # Append any globally defined tags to the target
-        kwargs.setdefault('tags', set())
-        kwargs['tags'].update(target_tag_definitions().tags_for(name))
         if name and self._serializable:
           kwargs.setdefault('type_alias', self._type_alias)
           obj = self._object_type(**kwargs)

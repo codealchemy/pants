@@ -221,7 +221,11 @@ class LegacyGraphSession(datatype(['scheduler_session', 'symbol_table', 'goal_ma
     :returns: A tuple of (BuildGraph, AddressMapper).
     """
     logger.debug('target_roots are: %r', target_roots)
-    graph = LegacyBuildGraph.create(self.scheduler_session, self.symbol_table)
+    graph = LegacyBuildGraph.create(
+      self.scheduler_session, 
+      self.symbol_table,
+      TargetTagDefinitions.global_instance,
+    )
     logger.debug('build_graph is: %s', graph)
     # Ensure the entire generator is unrolled.
     for _ in graph.inject_roots_closure(target_roots):
@@ -337,8 +341,7 @@ class EngineInitializer(object):
     parser = LegacyPythonCallbacksParser(
       symbol_table,
       build_file_aliases,
-      build_file_imports_behavior,
-      TargetTagDefinitions.global_instance
+      build_file_imports_behavior
     )
     address_mapper = AddressMapper(parser=parser,
                                    build_ignore_patterns=build_ignore_patterns,

@@ -338,7 +338,7 @@ class EngineInitializer(object):
       symbol_table,
       build_file_aliases,
       build_file_imports_behavior,
-      TargetTagDefinitions.global_instance()
+      TargetTagDefinitions.global_instance
     )
     address_mapper = AddressMapper(parser=parser,
                                    build_ignore_patterns=build_ignore_patterns,

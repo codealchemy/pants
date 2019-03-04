@@ -88,7 +88,7 @@ class LegacyPythonCallbacksParser(Parser):
         name = kwargs.get('name')
         # Append any globally defined tags to the target
         kwargs.setdefault('tags', set())
-        kwargs['tags'].update(target_tag_definitions.tags_for(name))
+        kwargs['tags'].update(target_tag_definitions().tags_for(name))
         if name and self._serializable:
           kwargs.setdefault('type_alias', self._type_alias)
           obj = self._object_type(**kwargs)

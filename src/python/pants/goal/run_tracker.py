@@ -31,7 +31,6 @@ from pants.goal.pantsd_stats import PantsDaemonStats
 from pants.option.config import Config
 from pants.option.options_fingerprinter import CoercingOptionEncoder
 from pants.reporting.report import Report
-from pants.stats.statsdb import StatsDBFactory
 from pants.subsystem.subsystem import Subsystem
 from pants.util.collections_abc_backport import OrderedDict
 from pants.util.dirutil import relative_symlink, safe_file_dump
@@ -80,7 +79,7 @@ class RunTracker(Subsystem):
 
   @classmethod
   def subsystem_dependencies(cls):
-    return super(RunTracker, cls).subsystem_dependencies() + (StatsDBFactory, Cookies)
+    return super(RunTracker, cls).subsystem_dependencies() + (Cookies, )
 
   @classmethod
   def register_options(cls, register):
@@ -429,14 +428,10 @@ class RunTracker(Subsystem):
     }
 
     # Dump individual stat file.
-    # TODO(benjy): Do we really need these, once the statsdb is mature?
     stats_file = os.path.join(get_pants_cachedir(), 'stats',
                               '{}.json'.format(self.run_info.get_info('id')))
     mode = 'w' if PY3 else 'wb'
     safe_file_dump(stats_file, self._json_dump_options(stats), mode=mode)
-
-    # Add to local stats db.
-    StatsDBFactory.global_instance().get_db().insert_stats(stats)
 
     # Upload to remote stats db.
     stats_upload_urls = copy.copy(self.get_options().stats_upload_urls)

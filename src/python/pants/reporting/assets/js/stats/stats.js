@@ -32,22 +32,6 @@ pants.stats.initPage = function() {
   // 2. Ensure google visualization package is loaded.
   google.setOnLoadCallback(initAfterLoad);
 
-  // 3. Ensure stats data is loaded.
-  $.ajax('/statsdata/', {
-    success: function(data, textStatus, jqXHR) {
-      statsData = data;
-      initAfterLoad();
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      showError('Failed to load stats data: ' + jqXHR.responseText +
-                '.<br>Status: ' + jqXHR.status + ' (' + jqXHR.statusText + ').');
-    }
-  });
-
-  function showError(msg) {
-    $('.error-msg').toggleClass('error-msg-hidden error-msg-shown').html(msg);
-  }
-
   function doInit() {
     // Create all the widgets.
     if (statsData) {
